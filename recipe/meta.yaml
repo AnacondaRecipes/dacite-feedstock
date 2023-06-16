@@ -1,24 +1,26 @@
 {% set name = "dacite" %}
-{% set version = "1.6.0" %}
+{% set version = "1.8.1" %}
 
 package:
-  name: "{{ name|lower }}"
-  version: "{{ version }}"
+  name: {{ name|lower }}
+  version: {{ version }}
 
 source:
-  url: "https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz"
-  sha256: d48125ed0a0352d3de9f493bf980038088f45f3f9d7498f090b50a847daaa6df
+  url: https://github.com/konradhalas/{{ name }}/archive/refs/tags/v{{ version }}.tar.gz
+  sha256: 791ac3da85a040684a96df59e2320dc7b3cac000ff536e3f4b00fb3b67520b86
 
 build:
-  noarch: python
   number: 0
-  script: "{{ PYTHON }} -m pip install . -vv"
+  skip: True # [py<37]
+  script: {{ PYTHON }} -m pip install .  --no-deps --no-build-isolation -vv
 
 requirements:
   host:
     - pip
     - python
     - dataclasses
+    - setuptools
+    - wheel
   run:
     - python
     - dataclasses
@@ -32,12 +34,16 @@ test:
     - pip check
 
 about:
-  home: "https://github.com/konradhalas/dacite"
+  home: https://github.com/konradhalas/dacite
   license: MIT
   license_family: MIT
   license_file: LICENSE
-  summary: "Simple creation of data classes from dictionaries."
-
+  description: |
+    This module simplifies creation of data classes
+    (PEP 557) from dictionaries.
+  summary: Simple creation of data classes from dictionaries.
+  dev_url:
+  doc_url:
 extra:
   recipe-maintainers:
     - mands
