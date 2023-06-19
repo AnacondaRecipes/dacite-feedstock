@@ -42,8 +42,8 @@ about:
     This module simplifies creation of data classes
     (PEP 557) from dictionaries.
   summary: Simple creation of data classes from dictionaries.
-  dev_url:
-  doc_url:
+  dev_url: https://pypi.org/project/dacite/
+  doc_url: https://github.com/konradhalas/dacite/blob/master/README.md
 extra:
   recipe-maintainers:
     - mands
