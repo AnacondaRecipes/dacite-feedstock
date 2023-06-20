@@ -18,12 +18,11 @@ requirements:
   host:
     - pip
     - python
-    - dataclasses
     - setuptools
     - wheel
   run:
     - python
-    - dataclasses
+    - dataclasses # [py<37]
 
 test:
   imports:
