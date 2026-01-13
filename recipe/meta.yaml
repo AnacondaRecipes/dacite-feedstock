@@ -24,6 +24,15 @@ requirements:
     - python
     - dataclasses # [py<37]
 
+{% set deselect_tests = "" %}
+# >   assert str(exception_info.value) == 'can not match type "float" to any type of "i" union: typing.Union[int, str]'
+# E   assert 'can not matc...on: int | str' == 'can not matc...ion[int, str]'
+# E
+# E     - can not match type "float" to any type of "i" union: typing.Union[int, str]
+# E     ?                                                      -------------   ^    -
+# E     + can not match type "float" to any type of "i" union: int | str
+# E     ?
+{% set deselect_tests = " --deselect=tests/core/test_union.py::test_from_dict_with_union_and_wrong_data" %}  # [py==314]
 test:
   source_files:
     - tests
@@ -31,7 +40,7 @@ test:
     - dacite
   commands:
     - pip check
-    - python -m pytest -v tests
+    - python -m pytest -v tests {{ deselect_tests }}
   requires:
     - pip
     - pytest >=5
