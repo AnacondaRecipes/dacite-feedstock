@@ -1,18 +1,18 @@
 {% set name = "dacite" %}
-{% set version = "1.8.1" %}
+{% set version = "1.9.2" %}
 
 package:
-  name: {{ name|lower }}
+  name: {{ name }}
   version: {{ version }}
 
 source:
-  url: https://github.com/konradhalas/{{ name }}/archive/refs/tags/v{{ version }}.tar.gz
-  sha256: 791ac3da85a040684a96df59e2320dc7b3cac000ff536e3f4b00fb3b67520b86
+  url: https://github.com/konradhalas/{{ name }}/archive/refs/tags/v{{ version }}-fix.tar.gz
+  sha256: 67cb6c3af1303cf765fd0f07251ad4c5148127d84142e974f36bad7330e3cd34
 
 build:
   number: 0
-  skip: True # [py<37]
   script: {{ PYTHON }} -m pip install .  --no-deps --no-build-isolation -vv
+  skip: true # [py<37]
 
 requirements:
   host:
@@ -24,13 +24,27 @@ requirements:
     - python
     - dataclasses # [py<37]
 
+{% set deselect_tests = "" %}
+# >   assert str(exception_info.value) == 'can not match type "float" to any type of "i" union: typing.Union[int, str]'
+# E   assert 'can not matc...on: int | str' == 'can not matc...ion[int, str]'
+# E
+# E     - can not match type "float" to any type of "i" union: typing.Union[int, str]
+# E     ?                                                      -------------   ^    -
+# E     + can not match type "float" to any type of "i" union: int | str
+# E     ?
+{% set deselect_tests = " --deselect=tests/core/test_union.py::test_from_dict_with_union_and_wrong_data" %}  # [py==314]
 test:
+  source_files:
+    - tests
   imports:
     - dacite
-  requires:
-    - pip
   commands:
     - pip check
+    - python -m pytest -v tests {{ deselect_tests }}
+  requires:
+    - pip
+    - pytest >=5
+    - pytest-benchmark
 
 about:
   home: https://github.com/konradhalas/dacite
@@ -41,8 +55,9 @@ about:
     This module simplifies creation of data classes
     (PEP 557) from dictionaries.
   summary: Simple creation of data classes from dictionaries.
-  dev_url: https://pypi.org/project/dacite/
+  dev_url: https://github.com/konradhalas/dacite
   doc_url: https://github.com/konradhalas/dacite/blob/master/README.md
+
 extra:
   recipe-maintainers:
     - mands
